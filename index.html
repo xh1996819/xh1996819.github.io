@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <style>
+        .content {
+            position: absolute;
+            top: 100px;
+            left: 100px;
+            width: 300px;
+            height: 300px;
+            border: 1px solid #ccc;
+            overflow: hidden;
+            border-radius: 5%;
+        }
+
+        .pic {
+            width: 100%;
+        }
+
+        .big {
+            position: absolute;
+            top: 100px;
+            left: 500px;
+            width: 600px;
+            height: 600px;
+            border: 1px solid #ccc;
+            overflow: hidden;
+            display: none;
+            border-radius: 50%;
+        }
+
+        .big::before {
+            content: '';
+            display: block;
+            width: 600px;
+            height: 1px;
+            border-top: 1.5px dashed #333;
+            position: absolute;
+            left: 0;
+            top: 50%;
+            transform: translateY(-50%);
+            z-index: 2;
+        }
+
+        .big::after {
+            content: '';
+            display: block;
+            width: 1px;
+            height: 600px;
+            border-left: 1.5px dashed #333;
+            position: absolute;
+            left: 50%;
+            top: 0;
+            transform: translateX(-50%);
+            z-index: 2;
+        }
+
+        .circle {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background-color: red;
+            position: absolute;
+            left: 50%;
+            top: 50%;
+            transform: translate(-50%, -50%);
+            z-index: 3;
+        }
+
+        .big_pic {
+            position: absolute;
+            left: 0;
+            top: 0;
+            transition: all .5s ease-out;
+        }
+
+        .glass {
+            position: absolute;
+            left: 0;
+            top: 0;
+            width: 100px;
+            height: 100px;
+            background-color: rgba(0, 0, 0, .2);
+            cursor: move;
+            display: none;
+            border-radius: 50%;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="content">
+        <div class="glass">
+
+        </div>
+        <img src="./pic.jpg" alt="" class="pic">
+    </div>
+    <div class="big">
+        <div class="circle"></div>
+        <img src="./pic.jpg" alt="" class="big_pic">
+    </div>
+
+    <script>
+        var content = document.querySelector('.content');
+        var glass = document.querySelector('.glass');
+        var big = document.querySelector('.big');
+        var bigPic = document.querySelector('.big_pic');
+
+        content.addEventListener('mouseover', function () {
+            glass.style.display = 'block';
+            big.style.display = 'block';
+
+
+        })
+        content.addEventListener('mouseout', function () {
+            glass.style.display = 'none';
+            big.style.display = 'none';
+        })
+        content.addEventListener('mousemove', function (e) {
+            var mouseX = e.clientX - content.offsetLeft;
+            var mouseY = e.clientY - content.offsetTop;
+            var x = mouseX - glass.offsetWidth / 2;
+            var y = mouseY - glass.offsetHeight / 2;
+            // var y = e.clientY - glass.offsetTop;
+            if (x <= 5) {
+                x = 0;
+            } else if (content.offsetWidth - x - glass.offsetWidth <= 5) {
+                x = content.offsetWidth - glass.offsetWidth;
+            }
+            if (y <= 5) {
+                y = 0;
+            } else if (content.offsetHeight - y - glass.offsetHeight <= 5) {
+                y = content.offsetHeight - glass.offsetHeight;
+            }
+            glass.style.left = x + 'px';
+            glass.style.top = y + 'px';
+
+            var maxMove = bigPic.offsetWidth - big.offsetWidth;
+            var bigX = x * maxMove / (content.offsetWidth - glass.offsetWidth);
+            var bigY = y * maxMove / (content.offsetHeight - glass.offsetHeight);
+            console.log(bigY);
+
+            bigPic.style.left = -bigX + 'px';
+            bigPic.style.top = -bigY + 'px';
+
+            content.addEventListener('mousedown', function () {
+                bigPic.style.top = -bigY + 200 + 'px';
+            })
+            content.addEventListener('mouseup', function () {
+                bigPic.style.top = -bigY + 'px';
+            })
+        })
+
+    </script>
+</body>
+
+</html>
